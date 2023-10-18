@@ -1,6 +1,6 @@
-import {TodoItemService} from '../services/toDoItemsService.js'
+import TodoItemService from "../services/toDoItemsService.js";
 
-export class TodoItemController {
+export default class TodoItemController {
   static create = async (ctx) => {
     try {
       const { text, todoId } = ctx.request.body;
@@ -23,7 +23,7 @@ export class TodoItemController {
 
   static fetchAll = async (ctx) => {
     try {
-      const { todoId } = ctx.params;
+      const { todoId } = ctx.request.params;
 
       // Validation
       if (!todoId) {
@@ -32,7 +32,7 @@ export class TodoItemController {
 
       const items = await TodoItemService.fetchAllItems(todoId);
       ctx.status = 200;
-      ctx.body = items;
+      ctx.body = { success: true, data: items };
     } catch (e) {
       ctx.throw(500, e.message);
     }
@@ -40,16 +40,19 @@ export class TodoItemController {
 
   static fetchOne = async (ctx) => {
     try {
-      const { todoItemId } = ctx.params;
+      const { todoItemId,todoId } = ctx.request.params;
 
       // Validation
       if (!todoItemId) {
-        ctx.throw(400, "todoItemId is required");
+        ctx.throw(400, "todoItemId  is required");
+      }
+      if (!todoId) {
+        ctx.throw(400, "todoId  is required");
       }
 
-      const item = await TodoItemService.fetchOneItem(todoItemId);
+      const item = await TodoItemService.fetchOne(todoItemId, todoId);
       ctx.status = 200;
-      ctx.body = item;
+      ctx.body = { success: true, data: item };
     } catch (e) {
       ctx.throw(500, e.message);
     }
@@ -57,21 +60,23 @@ export class TodoItemController {
 
   static update = async (ctx) => {
     try {
+      console.log("ctx.request", ctx.request.query);
       const { text, isCompleted } = ctx.request.body;
-      const { todoItemId } = ctx.params;
+      const { todoItemId, todoId } = ctx.request.query;
 
       // Validation
       if (!todoItemId) {
         ctx.throw(400, "todoItemId is required");
       }
 
-      const updatedItem = await TodoItemService.updateItem(
+      const updatedItem = await TodoItemService.update(
+        todoId,
         todoItemId,
         text,
         isCompleted
       );
       ctx.status = 200;
-      ctx.body = updatedItem;
+      ctx.body = { success: true, data: updatedItem };
     } catch (e) {
       ctx.throw(500, e.message);
     }

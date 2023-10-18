@@ -1,12 +1,12 @@
 import session from "async-local-storage";
 import db from "../models/index.js";
 
-export class ToDoItemsService {
+export default class ToDoItemsService {
   static createItem = async (description, toDoId) => {
     try {
       let toDoReq = {
-        toDoId,
-        description,
+        ToDoId: toDoId,
+        description: description,
       };
       let taskAddResponse = await db.ToDoItems.create(toDoReq);
       return taskAddResponse;
@@ -20,11 +20,19 @@ export class ToDoItemsService {
       throw new Error("Error in creating todo", e);
     }
   };
-  static update = async (taskId) => {
+  static update = async (todoId,taskId, text = "", isCompleted = false) => {
     try {
+      let updateReq = {};
+      if (text) {
+        updateReq["description"] = text;
+      }
+      if (isCompleted) {
+        updateReq["isCompleted"] = true;
+      }
       let taskUpdateResponse = await db.ToDoItems.update(updateReq, {
         where: {
           id: taskId,
+          ToDoId: todoId,
         },
       });
       return taskUpdateResponse;
@@ -38,14 +46,15 @@ export class ToDoItemsService {
       throw new Error("Error in creating todo", e);
     }
   };
-  static fetchOne = async (taskId) => {
+  static fetchOne = async (taskId,todoId) => {
     try {
       let taskResponse = await db.ToDoItems.findAll({
         where: {
           id: taskId,
+          ToDoId: todoId,
         },
         include: {
-          model: db.Todo,
+          model: db.ToDo,
         },
       });
       return taskResponse;
@@ -65,9 +74,9 @@ export class ToDoItemsService {
         where: {
           ToDoId: toDoId,
         },
-        include:{
-          model: db.Todo,
-        },
+        // include: {
+        //   model: db.ToDo,
+        // },
       });
       return taskResponse;
     } catch (e) {

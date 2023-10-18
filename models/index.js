@@ -2,10 +2,23 @@ import Sequelize from 'sequelize';
 import ToDo from './todo.js'
 import User from './user.js'
 import ToDoItems from './todoItems.js';
+import env from '../config/env.js'
 
-const db = new Sequelize(env().PG_DATABASE, env().PG_USER, env().PG_PASSWORD, {
-  host: env().PG_HOST,
-  port: env().PG_PORT,
+// const db = new Sequelize(env().PG_DATABASE, env().PG_USER, env().PG_PASSWORD, {
+//   host: env().PG_HOST,
+//   port: env().PG_PORT,
+//   dialect: "postgres",
+//   pool: {
+//     max: 5,
+//     min: 0,
+//     acquire: 30000,
+//     idle: 5000,
+//   },
+// });
+
+const db = new Sequelize('postgres','postgres', 'Akhil@123', {
+  host: 'localhost',
+  port: 5432,
   dialect: "postgres",
   pool: {
     max: 5,
@@ -31,16 +44,20 @@ export default db;
 
 
 async function createTable(db) {
-    // await db.ToDo.sync({alter:true})
-    // await db.User.sync({alter:true})
-    // await db.ToDoItems.sync({alter:true})
+      // await db.ToDo.sync({alter:true})
+    //  await db.User.sync({alter:true})
+    //  await db.ToDoItems.sync({alter:true})
 }
 
 //run this funcction to create table or update table
 
 // try{
-//     fun(db)
-//     .then((res)=>{console.log("table create")})
-//     .catch((err)=>{console.log("error creating table")})
+//     createTable(db)
+//       .then((res) => {
+//         console.log("table create");
+//       })
+//       .catch((err) => {
+//         console.log("error creating table",err);
+//       });
 // }
-// catch(err){console.log("error creating table")}
+// catch(err){console.log("error creating table",err)}

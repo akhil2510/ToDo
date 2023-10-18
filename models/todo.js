@@ -14,7 +14,7 @@ export default class ToDo extends Model {
         title: {
           type: DataTypes.STRING(100),
           allowNull: false,
-        },
+        }
       },
       {
         sequelize,

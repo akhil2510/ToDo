@@ -2,11 +2,12 @@ import session from 'async-local-storage'
 import db from '../models/index.js'
 
 
-export class ToDoService {
-  static _add = async (title) => {
+export default class ToDoService {
+  static _createTodo = async (title,userId) => {
     try {
       let toDoReq = {
         title: title,
+        UserId : userId
       };
       let toDoRes = await db.ToDo.create(toDoReq);
       return { success: true, data: toDoRes };
@@ -20,8 +21,13 @@ export class ToDoService {
       throw new Error("Error in creating todo", e);
     }
   };
-  static _update = async (todoId) => {
+  static _update = async (todoId,title='') => {
     try {
+      let updateReq = {}
+      if(title)
+      {
+        updateReq['title'] = title
+      }
       let toDoUpdateResponse = await db.ToDo.update(updateReq, {
         where: {
           id: todoId,

@@ -1,10 +1,14 @@
 import Koa from 'koa'
-import applyMiddleware from './server.js'
+import router from './router.js'
+import bodyParser  from 'koa-bodyparser';
 
 const app = new Koa()
 
 // start the server
-applyMiddleware(app);
+
+app.use(bodyParser());
+
+app.use(router);
 
 const PORT = 3000;
 app.listen(PORT, () => {
